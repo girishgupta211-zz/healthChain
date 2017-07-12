@@ -14,8 +14,9 @@ angular.module('myApp.dashboard', ['ngRoute'])
 	var web3 = new Web3();
     web3.setProvider(new web3.providers.HttpProvider("http://localhost:8013"));
 
-    var contractABI=web3.eth.contract([{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"patients","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getPtientsAddress","outputs":[{"name":"addr","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"name","type":"bytes32"},{"name":"p_address","type":"bytes32"},{"name":"dob","type":"uint256"},{"name":"blood_grp","type":"bytes32"},{"name":"phnum","type":"bytes32"}],"name":"Register_Patient","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"patientsAddr","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"Admin","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"inputs":[],"payable":false,"type":"constructor"},{"payable":true,"type":"fallback"},{"anonymous":false,"inputs":[{"indexed":false,"name":"id","type":"address"},{"indexed":false,"name":"desc","type":"bytes32"}],"name":"log","type":"event"}]);
-    var contract1 = contractABI.at("0x89f3344387fE66e843b490AFA1c7446f3d6c2A19");
+    var abiString = '[ { "constant": true, "inputs": [ { "name": "", "type": "address" } ], "name": "patients", "outputs": [ { "name": "", "type": "bool", "value": false } ], "payable": false, "type": "function" }, { "constant": false, "inputs": [ { "name": "name", "type": "bytes32" }, { "name": "p_address", "type": "bytes32" }, { "name": "dob", "type": "uint256" }, { "name": "blood_grp", "type": "bytes32" }, { "name": "phnum", "type": "bytes32" } ], "name": "Register_Patient", "outputs": [], "payable": false, "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "uint256" } ], "name": "patientsAddr", "outputs": [ { "name": "", "type": "address", "value": "0x95ebfc7e561faaaaea93828e050b528858f661d1" } ], "payable": false, "type": "function" }, { "constant": true, "inputs": [], "name": "Admin", "outputs": [ { "name": "", "type": "address", "value": "0x5cb1ffd42dea0afeefb8950adcb2b6e5cff2efc3" } ], "payable": false, "type": "function" }, { "inputs": [], "payable": false, "type": "constructor" }, { "payable": true, "type": "fallback" }, { "anonymous": false, "inputs": [ { "indexed": false, "name": "id", "type": "address" }, { "indexed": false, "name": "desc", "type": "bytes32" } ], "name": "log", "type": "event" } ]';
+    var abi = JSON.parse(abiString);
+    var contract1 = web3.eth.contract(abi).at("0x9D160C47ae9Ccf33078c9513492e5499cEE53439");
     var coinBalance, etherBalance;
     $scope.patient ={};
     //$scope.timeStamp = new Date($scope.patient.dob);
@@ -24,12 +25,14 @@ angular.module('myApp.dashboard', ['ngRoute'])
     $scope.patient.name = web3.toAscii(name);*/
 
     $scope.register = function(){
-        var name = web3.toHex($scope.patient.name);
-        var address = web3.toHex($scope.patient.address);
-        var dob = web3.toHex($scope.patient.dob);
-        var bloodgrp = web3.toHex($scope.patient.bloodgrp);
-        var mobile = web3.toHex($scope.patient.mobile);
-        contract1.Register_Patient.sendTransaction(name, address, dob, bloodgrp, mobile, {from:web3.eth.account[0], gas:210000});
+        var name = ($scope.patient.name);
+        var address = ($scope.patient.address);
+        var dob = ($scope.patient.dob);
+        var bloodgrp = ($scope.patient.bloodgrp);
+        var mobile = ($scope.patient.mobile);
+        // Need to unlock the account before send Transaction. This is hard coaded for now.
+        web3.personal.unlockAccount(web3.eth.accounts[0],'password');
+        var tx = contract1.Register_Patient(name, address, dob, bloodgrp, mobile, {from:web3.eth.accounts[0], gas:210000});
     }
     
 
