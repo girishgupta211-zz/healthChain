@@ -71,32 +71,56 @@
 			        <input type="text" ng-model="patient.id"/>
 			      </div>
 			    </div>
-			    <div class="form-group">
-			      <label class="control-label col-sm-3"> Blood Pressure: </label>
-			      <div class="col-sm-6">
-			        <input type="text" ng-model="patient.bp"/>
-			      </div>
+			    <div class="form-group" ng-if='patient.name1'>
+			      <label class="control-label col-sm-3"> Name: </label>			{{patient.name1}}      
 			    </div>
-			    <div class="form-group">
-			      <label class="control-label col-sm-3"> Weight: </label>
-			      <div class="col-sm-6">
-			        <input type="number" ng-model="patient.weight"/>
-			      </div>
+			    <div class="form-group" ng-if='patient.dob1'>
+			      <label class="control-label col-sm-3"> DOB: </label>			 {{patient.dob1}}     
 			    </div>
-			    <div class="form-group">
-			      <label class="control-label col-sm-3">Height (in cms): </label>
-			      <div class="col-sm-6">
-			        <input type="text" ng-model="patient.height"/>
-			      </div>
+			    <div class="form-group" ng-if='patient.mobileNo1'>
+			      <label class="control-label col-sm-3">Mobile No: </label>		{{patient.mobileNo1}}	      
+			    </div>
+			    <div class="form-group" ng-if='patient.bloodGroup1'>
+			      <label class="control-label col-sm-3">Blood group: </label>	{{patient.bloodGroup1}}	      
+			    </div>
+			    <div class="form-group" ng-if='patient.address1'>
+			      <label class="control-label col-sm-3">Address: </label>		 {{patient.address1}}     
 			    </div>
 			    <div class="form-group">
 			      <div class="col-sm-offset-2 col-sm-10">	        
-			        <button type="submit" class="btn btn-default">Submit </button>
+			        <button type="button" ng-click='getPatientDetails(patient.id)' class="btn btn-default">Submit </button>
 			      </div>
 			    </div>
 			</form>
 		</div>
+		<input type="" name="" ng-model='index'>
+		<button ng-click='getFirstPatietAddress(index)'> Get</button>
+		{{paddr}}
 	</div>
+	<div class="row">
+		<input type="" name="" ng-model='txHash'>
+		<button ng-click='getTransactionReceipt(txHash)'> Get Tx Reciept</button> 
+		<div ng-if="transaction.txhash">
+			<p>
+				<label>Transaction Hash: </label>{{transaction.txhash}}
+			</p>
+			<p>
+				<label> Transaction Index: </label>{{transaction.txIndex}}
+			<p>
+				<label>BlockHash: </label>{{transaction.blockHash}}
+			</p>
+			<p>
+				<label>Gas Used: </label>{{transaction.gasUsed}}
+			</p>
+			<p>
+				<label>Cumulative Gas Used: </label>{{transaction.cumulativeGasUsed}}
+			</p>						
+		</div>
+	</div>
+	<div class="row">
+		<button style="padding left:10px" ng-click='startLogging()'>Start Logging</button>
+		<button style="padding left:10px" ng-click='stopLogging()'>Stop Logging</button>
+	</div>	
 </div> <!-- container ends here -->
 
 

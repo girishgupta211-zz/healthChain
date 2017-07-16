@@ -12,16 +12,18 @@ angular.module('myApp.dashboard', ['ngRoute'])
 .controller('dashboardCtrl',function($scope, $http, $timeout,$uibModal, $uibModalStack, uibDateParser) {
 	//var Web3 = require('web3');
 	var web3 = new Web3();
-    web3.setProvider(new web3.providers.HttpProvider("http://localhost:8013"));
+    //web3.setProvider(new web3.providers.HttpProvider("http://localhost:8013"));
+    web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
 
-    var abiString = '[ { "constant": true, "inputs": [ { "name": "", "type": "address" } ], "name": "patients", "outputs": [ { "name": "", "type": "bool", "value": false } ], "payable": false, "type": "function" }, { "constant": false, "inputs": [ { "name": "name", "type": "bytes32" }, { "name": "p_address", "type": "bytes32" }, { "name": "dob", "type": "uint256" }, { "name": "blood_grp", "type": "bytes32" }, { "name": "phnum", "type": "bytes32" } ], "name": "Register_Patient", "outputs": [], "payable": false, "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "uint256" } ], "name": "patientsAddr", "outputs": [ { "name": "", "type": "address", "value": "0x95ebfc7e561faaaaea93828e050b528858f661d1" } ], "payable": false, "type": "function" }, { "constant": true, "inputs": [], "name": "Admin", "outputs": [ { "name": "", "type": "address", "value": "0x5cb1ffd42dea0afeefb8950adcb2b6e5cff2efc3" } ], "payable": false, "type": "function" }, { "inputs": [], "payable": false, "type": "constructor" }, { "payable": true, "type": "fallback" }, { "anonymous": false, "inputs": [ { "indexed": false, "name": "id", "type": "address" }, { "indexed": false, "name": "desc", "type": "bytes32" } ], "name": "log", "type": "event" } ]';
-    var abi = JSON.parse(abiString);
-    var contract1 = web3.eth.contract(abi).at("0x9D160C47ae9Ccf33078c9513492e5499cEE53439");
-    var coinBalance, etherBalance;
-    $scope.patient ={};
+    var adminAbiString = '[{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"patients","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"uint256"}],"name":"records","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"patientsAddr","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"id","type":"address"},{"name":"day","type":"uint256"},{"name":"data","type":"string"}],"name":"addRecords","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getFirstPatietAddress","outputs":[{"name":"addr","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"name","type":"string"},{"name":"p_address","type":"string"},{"name":"dob","type":"uint256"},{"name":"blood_grp","type":"string"},{"name":"phnum","type":"string"}],"name":"registerPatient","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"Admin","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"inputs":[],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"id","type":"address"},{"indexed":false,"name":"desc","type":"string"}],"name":"log","type":"event"}]';
+    var adminAbi = JSON.parse(adminAbiString);
+    var adminContract = web3.eth.contract(adminAbi).at("0xa9f93318708a590eedb5977a69676a7334a79645");
+    
+    // Patient contact details
+    var patientabi = JSON.parse('[{"constant":true,"inputs":[],"name":"getName","outputs":[{"name":"name","type":"string"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getaddress","outputs":[{"name":"add","type":"string"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"bpm","type":"uint256"},{"name":"bp","type":"uint256"},{"name":"spo2","type":"string"}],"name":"addHealthData","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getbloodgrp","outputs":[{"name":"blood_grp","type":"string"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"p","outputs":[{"name":"name","type":"string"},{"name":"p_address","type":"string"},{"name":"dob","type":"uint256"},{"name":"blood_grp","type":"string"},{"name":"phnum","type":"string"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getdob","outputs":[{"name":"dob","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getphnum","outputs":[{"name":"phnum","type":"string"}],"payable":false,"type":"function"},{"inputs":[{"name":"name","type":"string"},{"name":"p_address","type":"string"},{"name":"dob","type":"uint256"},{"name":"blood_grp","type":"string"},{"name":"phnum","type":"string"}],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"bpm","type":"uint256"},{"indexed":false,"name":"bp","type":"uint256"},{"indexed":false,"name":"spo2","type":"string"}],"name":"logEvent","type":"event"}]');
     //$scope.timeStamp = new Date($scope.patient.dob);
 
-    /*var name = contract1.getName();
+    /*var name = adminContract.getName();
     $scope.patient.name = web3.toAscii(name);*/
 
     $scope.register = function(){
@@ -31,10 +33,79 @@ angular.module('myApp.dashboard', ['ngRoute'])
         var bloodgrp = ($scope.patient.bloodgrp);
         var mobile = ($scope.patient.mobile);
         // Need to unlock the account before send Transaction. This is hard coaded for now.
-        web3.personal.unlockAccount(web3.eth.accounts[0],'password');
-        var tx = contract1.Register_Patient(name, address, dob, bloodgrp, mobile, {from:web3.eth.accounts[0], gas:210000});
+        //web3.personal.unlockAccount(web3.eth.accounts[0],'password');
+        var tx = adminContract.registerPatient.sendTransaction(name, address, dob, bloodgrp, mobile, {from:web3.eth.accounts[0], gas:697283});        
+        console.log(tx);
+
+        $scope.currentPatintAddress= adminContract.getFirstPatietAddress();
+        alert($scope.currentPatintAddress);
+    }
+
+    $scope.getPatientDetails = function(id){
+        var patientContract = web3.eth.contract(patientabi).at(id);
+        $scope.patient.name1 = patientContract.getName();
+        $scope.patient.dob1 = patientContract.getdob().toNumber();
+        //$scope.patient.dob1 = web3.toAscii(patientContract.getdob());
+        $scope.patient.address1 = (patientContract.getaddress());
+        $scope.patient.bloodGroup1 = (patientContract.getbloodgrp());
+        $scope.patient.mobileNo1 = patientContract.getphnum();
     }
     
+    $scope.getFirstPatietAddress = function(index){
+        $scope.paddr = adminContract.patientsAddr(index);
+        console.log($scope.paddr);
+    }
+
+    $scope.transaction={};
+    $scope.getTransactionReceipt = function(txhash){
+        var s = web3.eth.getTransactionReceipt(txhash);
+        console.log(s);
+        $scope.transaction.txhash = s.transactionHash;
+        $scope.transaction.txIndex = s.transactionIndex;
+        $scope.transaction.blockHash = s.blockHash;
+        $scope.transaction.blockNumber = s.blockNumber;
+        $scope.transaction.gasUsed = s.gasUsed;
+        $scope.transaction.cumulativeGasUsed = s.cumulativeGasUsed;
+        $scope.transaction.data = s.logs.data;        
+    }
+
+    $scope.startLoggingVar = false;
+    $scope.startLogging = function(){
+        alert('Start Logging events');
+        $scope.startLoggingVar = true;
+    }
+
+    $scope.stopLogging = function(){
+        alert('Stop Logging events');
+        $scope.startLoggingVar = true;
+    }
+
+    var counter = 0;
+    function logData(){
+        if($scope.startLoggingVar){
+            counter++;
+            adminContract.addRecords.sendTransaction('0xc5f74b4d70f401043376aaa1b8c2edde32848deb',counter, "Hello",{from:web3.eth.accounts[0], gas:2100000});
+        }
+    }
+    var interval = setInterval(logData, 13000);
+
+    // define events object for all contract events
+    var adminEvent = adminContract.log();
+    //var patientEvent = patientContract.allEvents();
+
+    // watch for events
+    adminEvent.watch(function(error, event){
+      if (!error)
+        console.log(event);
+        //addEvent(event);
+    });
+    /*patientEvent.watch(function(error, event){
+      if (!error)
+        console.log(event);
+        //addEvent(event);
+    });*/
+
+
 
 	//var x=watchTransaction();
 
