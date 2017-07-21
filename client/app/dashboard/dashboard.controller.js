@@ -26,7 +26,7 @@ angular.module('myApp.dashboard', ['ngRoute'])
     /*var name = adminContract.getName();
     $scope.patient.name = web3.toAscii(name);*/
 
-    $scope.register = function(){
+    /*$scope.register = function(){
         var name = ($scope.patient.name);
         var address = ($scope.patient.address);
         var dob = ($scope.patient.dob);
@@ -39,9 +39,9 @@ angular.module('myApp.dashboard', ['ngRoute'])
 
         $scope.currentPatintAddress= adminContract.getFirstPatietAddress();
         alert($scope.currentPatintAddress);
-    }
+    }*/
 
-    $scope.getPatientDetails = function(id){
+    /*$scope.getPatientDetails = function(id){
         var patientContract = web3.eth.contract(patientabi).at(id);
         $scope.patient.name1 = patientContract.getName();
         $scope.patient.dob1 = patientContract.getdob().toNumber();
@@ -49,15 +49,15 @@ angular.module('myApp.dashboard', ['ngRoute'])
         $scope.patient.address1 = (patientContract.getaddress());
         $scope.patient.bloodGroup1 = (patientContract.getbloodgrp());
         $scope.patient.mobileNo1 = patientContract.getphnum();
-    }
+    }*/
     
     $scope.getFirstPatietAddress = function(index){
         $scope.paddr = adminContract.patientsAddr(index);
         console.log($scope.paddr);
     }
 
-    $scope.transaction={};
-    $scope.getTransactionReceipt = function(txhash){
+    /*$scope.transaction={};*/
+   /* $scope.getTransactionReceipt = function(txhash){
         var s = web3.eth.getTransactionReceipt(txhash);
         console.log(s);
         $scope.transaction.txhash = s.transactionHash;
@@ -67,7 +67,7 @@ angular.module('myApp.dashboard', ['ngRoute'])
         $scope.transaction.gasUsed = s.gasUsed;
         $scope.transaction.cumulativeGasUsed = s.cumulativeGasUsed;
         $scope.transaction.data = s.logs.data;        
-    }
+    }*/
 
     $scope.startLoggingVar = false;
     $scope.startLogging = function(){
@@ -99,386 +99,114 @@ angular.module('myApp.dashboard', ['ngRoute'])
         console.log(event);
         //addEvent(event);
     });
-    /*patientEvent.watch(function(error, event){
-      if (!error)
-        console.log(event);
-        //addEvent(event);
-    });*/
 
 
+/*From APi*/
+var config = { headers: {'Content-Type': 'application/json'}};
+$scope.register = function(name,mobileNo,dob,bloodGroup,address){
+    var from= web3.eth.accounts[0];
+   var data = JSON.stringify({
+        name: name,
+        mobileNo: mobileNo,
+        dob:dob,
+        bloodGroup: bloodGroup,
+        address: address,
+        from: from
 
-	//var x=watchTransaction();
-
-/*    $scope.testEstimateGas = function(){
-        var config = {
-            headers: {               
-                'Content-Type': 'application/json'
+   });   
+   $http.post('http://localhost:7000/eth/registerPatient', data, config)
+        .then(function successCallback(resp){
+            console.log(resp);
+            if(resp.data.success){
+                var txHash = resp.data.data.txHash;
+                var patientAddress = resp.data.data.patientsAddress;
+                alert('patient Id = '+patientAddress);
             }
-        };
-        var data = {};
-        $http.post('http://localhost:7000/eth/testEstimateGas', data,config)
-            .then(function successCallback(resp){
-                    console.log(resp.data);                    
-                    }, 
-                function failureCallback(){
-                    console.log('failure');
-                });    
-    }
-
-    //check Ether Balance - done
-    $scope.showBalance = false;
-    $scope.checkEtherBalance = function(accountAddr){
-        if(!isAddress(accountAddr)){
-            $scope.error = "Account address is not valid";
-            $scope.openErrorPopup();
-        }
-        var data = JSON.stringify({accountAddress:accountAddr});
-        var config = {
-            headers: {               
-                'Content-Type': 'application/json'
-            }
-        };
-        $http.post('http://localhost:7000/eth/checkEthBalance', data,config)
-            .then(function successCallback(resp){
-                    console.log(resp.data);
-                    if(resp.data.success== 'true'){
-                        console.log(resp.data.data[0].balance);
-                        $scope.etherBalance = resp.data.data[0].balance;
-                        $scope.showBalance = true;
-                        $timeout(function(){
-                            $scope.showBalance = false;
-                        }, 4000);
-                        console.log('x');
-                        $scope.x.$setPristine();
-                        }
-                    }, 
-                function failureCallback(){
-                    console.log('failure');
-                });           
-    }
-
-    $scope.checkCoinBalance = function(accountAddr){    
-        console.log('Check coin balance');   
-        var data = JSON.stringify({accountAddress:accountAddr});
-        var config = {
-            headers: {               
-                'Content-Type': 'application/json'
-            }
-        };
-        $http.post('http://localhost:7000/eth/checkCoinBalance', data,config)
-            .then(function successCallback(resp){
-                    console.log(resp.data);
-                    if(resp.data.success== 'true'){
-                        console.log(resp.data.data[0].balance);
-                        $scope.coinBalance = resp.data.data[0].balance;
-                        $scope.showBalance = true;
-                        $timeout(function(){
-                            $scope.showBalance = false;
-                        }, 4000);
-                        }
-                    }, 
-                function failureCallback(){
-                    console.log('failure');
-                });           
-    }
-
-    // watch balance - pending
-    function watchBalance(accountAddr) {
-        alert("clicked");
-       var etherBalance , coinBalance; 
-	   etherBalance=web3.eth.getBalance(accountAddr).toNumber(); 
-	   coinBalance=contract1.balanceOf(accountAddr); 			
-        web3.eth.filter('latest').watch(function() {
-         	etherBalance=web3.eth.getBalance(accountAddr).toNumber(); 
-        		coinBalance=contract1.balanceOf(accountAddr);
-            });
-    }
-
-    //transfer Coin - done 
-    $scope.transferCoin = function(to, amount,from, passphrase){
-        var data = JSON.stringify({
-            senderAddress: from,
-            recipientAddress: to,
-            amount: amount,
-            passphrase:passphrase
-        });
-        var config = {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        };
-        $http.post('http://localhost:7000/eth/transferCoin', data, config)
-            .then(function successCallback(resp){
-                console.log(resp);
-                if(resp.data.success){
-                    $scope.transactionHash = resp.data.data[0].transactionHash;
-                    alert('Transaction send successfully. Tx hash = '+$scope.transactionHash);
-                }
-                else{
-                    alert('Error: '+resp.data.data[0].message);
-                }            
-                $scope.transfer = {};
-                $scope.transferForm.$setUntouched();
-                $scope.transferForm.$setPristine();
-                $scope.closeAllPopup();             
-                }, function errorCallback(resp){
-                    console.log(resp);
-                });    	
-    }
-    
-	//Mint Token -- pending
-    $scope.mintToken = function(to,amount,passphrase){
-        console.log('Mint token from client');
-        var data = JSON.stringify({
-            toAddress: to,
-            mintAmount: amount,
-            passphrase: passphrase
-        });
-        var config = {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        };
-        $http.post('http://localhost:7000/eth/mintCoin', data, config)
-            .then(function successCallback(resp){
-                console.log(resp);
-                if(resp.data.success){
-                    $scope.transactionHash = resp.data.data[0].transactionHash;
-                    alert('Transaction send successfully. Tx hash = '+$scope.transactionHash);
-                    $scope.closeAllPopup();
-                    $scope.mint={};
-                    $scope.mintForm.setPristine();
-                }                
-                else{
-                    alert('Error: '+resp.data.data[0].message);
-                }             
+            else{
+                alert('Error: '+resp.data.data.message);
+            }                                      
             }, function errorCallback(resp){
-                console.log('error');
-            });         
-    }
-
-	//Set Prices
-    $scope.setPrices = function(newSp, newBp, passphrase){
-        var data = JSON.stringify({
-            sellPrice : newSp,
-            buyPrice : newBp,
-            passphrase : passphrase
-        });
-        var config = {
-            headers:{
-                'Content-Type' : 'application/json'
-            }
-        };
-        $http.post('http://localhost:7000/eth/setPrices',data, config)
-            .then(function successCallback(resp){
                 console.log(resp);
-                if(resp.data.success){
-                    $scope.transactionHash = resp.data.data[0].transactionHash;            
-                    alert('Transaction send successfully. Tx hash = '+$scope.transactionHash); 
-                }                
-                else{
-                    alert('Error: '+resp.data.data[0].message);
-                }                   
-            },
-            function errorCallback(err){
-                console.log("Error in getting data from server :"+JSON.stringify(err));
-            });
-    }
+   });     
+}
 
-	//Sell coin
-    $scope.sell = function(frm,amount,passphrase){
-        var data= JSON.stringify({
-            from : frm,
-            amount : amount,
-            passphrase : passphrase
-        }); 
-        var config = {
-            headers:{
-                'Content-Type' : 'application/json'
+$scope.getPatientDetails = function(id){
+    var data = JSON.stringify({
+        patientId: id
+   });   
+   $http.post('http://localhost:7000/eth/getPatinetDetails', data, config)
+        .then(function successCallback(resp){
+            console.log(resp);
+            if(resp.data.success){
+                $scope.patient.name1 = resp.data.data.name;
+                $scope.patient.dob1 = resp.data.data.dob;
+                $scope.patient.address1 = resp.data.data.address;
+                $scope.patient.bloodGroup1 = resp.data.data.bloodGroup;
+                $scope.patient.mobileNo1 = resp.data.data.mobileNo;
             }
-        };
-        $http.post('http://localhost:7000/eth/sellCoin',data, config)
-            .then(function successCallback(resp){
+            else{
+                alert('Error: '+resp.data.data.message);
+            }                                      
+            }, function errorCallback(resp){
                 console.log(resp);
-                if(resp.data.success){
-                    $scope.transactionHash = resp.data.data[0].transactionHash; 
-                    alert('Transaction send successfully. Tx hash = '+$scope.transactionHash);
-                }                
-                else{
-                    alert('Error: '+resp.data.data[0].message);
-                }                    
-            },
-            function errorCallback(err){
-                console.log("Error in getting data from server :"+JSON.stringify(err));
-            }); 
-    }
+    });      
+}
 
-	//buy coin
-    $scope.buy = function(frm,ether,passphrase){
-    	var data= JSON.stringify({
-            from : frm,
-            ether : ether,
-            passphrase : passphrase
-        }); 
-        var config = {
-            headers:{
-                'Content-Type' : 'application/json'
+$scope.transaction={};
+$scope.medicine={};
+$scope.getTransactionReceipt = function(txhash){
+    var data = JSON.stringify({
+       txHash: txHash
+    });   
+    $http.post('http://localhost:7000/eth/getTransactionReceipt', data, config)
+        .then(function successCallback(resp){
+            console.log(resp);
+            if(resp.data.success){
+                var respData = resp.data.data;
+                $scope.transaction.txhash = respData.transactionHash;
+                $scope.transaction.txIndex = respData.transactionIndex;
+                $scope.transaction.blockHash = respData.blockHash;
+                $scope.transaction.blockNumber = respData.blockNumber;
+                $scope.transaction.gasUsed = respData.gasUsed;
+                $scope.transaction.cumulativeGasUsed = respData.cumulativeGasUsed;
+                $scope.transaction.data = respData.logs.data; 
             }
-        };
-        $http.post('http://localhost:7000/eth/buyCoin',data, config)
-            .then(function successCallback(resp){        
+            else{
+                alert('Error: '+resp.data.data.message);
+            }                                      
+            }, function errorCallback(resp){
                 console.log(resp);
-                if(resp.data.success){
-                    $scope.transactionHash = resp.data.data[0].transactionHash; 
-                    alert('Transaction send successfully. Tx hash = '+$scope.transactionHash);
-                }                
-                else{
-                    alert('Error: '+resp.data.data[0].message);
-                }   
-            },
-            function errorCallback(err){
-                console.log("Error in getting data from server :"+JSON.stringify(err));
-            }); 
+    });
     }
 
-	//create new account
-    $scope.showAccountAddr = false;
-    $scope.createAccount = function (password){
-        var data = JSON.stringify({passphrase:password});
-        var config = {
-            headers: {
-                'Content-Type': 'application/json'
+$scope.prescription = [];
+$scope.addPrescription = function(name,timesADay,fromDate,tillDate,doctorId){
+    var currentPrecription = {name:name, timesADay: timesADay, fromdate: fromDate, tillDate: tillDate, doctorId: doctorId};
+    //$scope.prescription.push(currentPrecription);
+    $scope.prescription.push(currentPrecription);
+    console.log(typeof($scope.prescription));
+}
+
+$scope.submitPrescription = function(patientId){
+    console.log($scope.prescription);
+    var data = {
+        'patientId': patientId,
+        'prescription': $scope.prescription
+    }
+    console.log(data);
+    //$scope.precription = [];
+    $http.post('http://localhost:7000/eth/addPrescription', data, config)
+        .then(function successCallback(resp){
+            console.log(resp);
+            if(resp.data.success){
+                console.log("Prescription added successfully");
             }
-        };
-        $http.post('http://localhost:7000/eth/createNewAccount', data, config)
-            .then(function successCallback(resp){
-                 console.log(resp);
-                if(resp.data.success){
-                    $scope.accountAddress = resp.data.data[0].accountAddress;
-                    $scope.showAccountAddr = true;
-                }                
-                else{
-                    alert('Error: '+resp.data.data[0].message);
-                }   
-                $timeout(function(){
-                    $scope.showAccountAddr = false;
-                }, 3000);
+            else{
+                alert('Error: '+resp.data.data.message);
+            }                                      
+            }, function errorCallback(resp){
+                console.log(resp);
+   });
+}
 
-                }, function errorCallback(resp){
-                    console.log('error');
-                });    	
-    }
-
-    //Popup
-     $scope.openBalancePopup= function(){
-        $uibModal.open({
-            templateUrl: 'assets/models/popUp1.html',
-            size: 'md',
-            scope: $scope,
-            backdrop: 'static',
-            keyboard: false,
-            windowClass: 'zindex'
-          });
-        }
-
-     $scope.openMintPopup = function(){
-        $uibModal.open({
-            templateUrl: 'assets/models/mintPopup.html',
-            size: 'md',
-            scope: $scope,
-            backdrop: 'static',
-            keyboard: false,
-            windowClass: 'zindex'
-          });
-        }
-
-     $scope.openTransferCoinPopUp = function(){
-        $uibModal.open({
-            templateUrl: 'assets/models/transferCoinPopup.html',
-            size: 'md',
-            scope: $scope,
-            backdrop: 'static',
-            keyboard: false,
-            windowClass: 'zindex'
-          });
-        }
-
-     $scope.openErrorPopup = function(){
-        $uibModal.open({
-            templateUrl: 'assets/models/errorPopup.html',
-            size: 'md',
-            scope: $scope,
-            backdrop: 'static',
-            keyboard: false,
-            windowClass: 'zindex'
-          });
-     }
-
-
-    $scope.closeAllPopup = function(){
-        $uibModalStack.dismissAll();
-    }
-
-
-    // Validate account addeesses
-    var isAddress = function (address) {
-        // function isAddress(address) {
-        if (!/^(0x)?[0-9a-f]{40}$/i.test(address)) {
-            // check if it has the basic requirements of an address
-            return false;
-        } 
-        else if (/^(0x)?[0-9a-f]{40}$/.test(address) || /^(0x)?[0-9A-F]{40}$/.test(address)) {
-            // If it's all small caps or all all caps, return "true
-            return true;
-        } 
-        else {
-            // Otherwise check each case
-            return isChecksumAddress(address);
-        }
-    }
-
-    var isChecksumAddress = function (address) {
-        // Check each case
-        address = address.replace('0x','');
-        var addressHash = web3.sha3(address.toLowerCase());
-        for (var i = 0; i < 40; i++ ) {
-            // the nth letter should be uppercase if the nth digit of casemap is 1
-            if ((parseInt(addressHash[i], 16) > 7 && address[i].toUpperCase() !== address[i]) || (parseInt(addressHash[i], 16) <= 7 && address[i].toLowerCase() !== address[i])) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-
-   var arr=[];
-	 function watchTransaction(tx){
-	 		
-	 	contract1.Transfer(function(error,result){
-	 		if(!error){	
-	 			//storeTransactionHash(result.transactionHash);
-				if(result.transactionHash==tx)           // to display only the transactions that are copmming through this web interface
-					alert("successful");
-					//console.log("Coin transfer: " + result.args.amount + " tokens were sent. Balances now are as following: \n Sender:\t" + result.args.sender);				
-	 		}
-	 		else{
-	 			alert("transaction failed");
-	 		}
-	 	})
-	 }
-
-
- 	/*function storeTransactionHash(transHash){
- 			arr.push(transHash);
-
- 			alert("Transaction successfull.. trasnsaction hash= "+transHash);
-			getTransactions();
-		
- 	} */
-
- 	/*function getTransactions(){
- 		console.log("Without duplicate:"+arr);
- 		//arr1=jQuery.unique(arr);
- 		document.getElementById('txhash1').innerText="array  is "+ arr ;
- 	}*/
-});
+}); // controller ends here

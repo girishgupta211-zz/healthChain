@@ -9,6 +9,7 @@
 
 
 <div class="container">
+	<!-- Regestration Form and Patients Details-->
 	<div class= "row">
 		<div class="col-md-6">
 			<form class="form-horizontal" name="balanceForm">
@@ -58,7 +59,7 @@
 			    </div>
 			    <div class="form-group">
 			      <div class="col-sm-offset-2 col-sm-10">	        
-			        <button type="button" ng-click="register()" class="btn btn-default">Register </button>
+			        <button type="button" class="btn btn-default" ng-click="register(patient.name,patient.mobile,patient.dob,patient.bloodgrp,patient.address)" >Register </button>
 			      </div>
 			    </div>
 			</form>
@@ -97,30 +98,88 @@
 		<button ng-click='getFirstPatietAddress(index)'> Get</button>
 		{{paddr}}
 	</div>
+	<!-- Add Prescription -->
 	<div class="row">
-		<input type="" name="" ng-model='txHash'>
-		<button ng-click='getTransactionReceipt(txHash)'> Get Tx Reciept</button> 
-		<div ng-if="transaction.txhash">
-			<p>
-				<label>Transaction Hash: </label>{{transaction.txhash}}
-			</p>
-			<p>
-				<label> Transaction Index: </label>{{transaction.txIndex}}
-			<p>
-				<label>BlockHash: </label>{{transaction.blockHash}}
-			</p>
-			<p>
-				<label>Gas Used: </label>{{transaction.gasUsed}}
-			</p>
-			<p>
-				<label>Cumulative Gas Used: </label>{{transaction.cumulativeGasUsed}}
-			</p>						
+		<div class="col-md-6">
+            <h3> Add Prescription</h3>
+			<form class="form-horizontal" name="prescriptionForm">
+			    <div class="form-group">
+			      <label class="control-label col-sm-2"> Patinet Id: </label>
+			      <div class="col-sm-6">
+			        <input type="text" ng-model="medicine.patientId"/>
+			      </div>
+			    </div>
+			    <div class="form-group">
+			      <label class="control-label col-sm-2"> Medicine Name: </label>
+			      <div class="col-sm-6">
+			        <input type="text" ng-model="medicine.name" />
+			      </div>
+			    </div>
+			    <div class="form-group">
+			      <label class="control-label col-sm-2"> Times A Day : </label>
+			      <div class="col-sm-6">
+			        <input type="text" ng-model="medicine.timesADay" />			        
+			      </div>
+			    </div>
+			    <div class="form-group">
+			      <label class="control-label col-sm-2"> From date : </label>
+			      <div class="col-sm-6">
+			        <input type="text" placeholder="yyyy-mm-dd" ng-model="medicine.fromdate" />			        
+			     </div>
+			    </div>
+			    <div class="form-group">
+			      <label class="control-label col-sm-2"> Till date : </label>
+			      <div class="col-sm-6">
+			        <input type="text" placeholder="yyyy-mm-dd" ng-model="medicine.tilldate" />			        
+			      </div>
+                </div>
+			    <div class="form-group">
+			      <label class="control-label col-sm-2"> Doc Id : </label>
+			      <div class="col-sm-6">
+			        <input type="text" ng-model="medicine.doctorId" />
+			      </div>
+			    </div>
+			    <div class="form-group">
+			      <div class="col-sm-offset-2 col-sm-10">	        
+			        <button type="button" class="btn btn-default" ng-click="addPrescription(medicine.name,medicine.timesADay, medicine.fromdate, medicine.tilldate, medicine.doctorId)" >Add </button>
+			      </div>
+			    </div>
+			    <div class="form-group">
+			      <div class="col-sm-offset-2 col-sm-10">	        
+			        <button type="button" ng-click="submitPrescription(medicine.patientId)" class="btn btn-default">Submit </button>
+			      </div>
+			    </div>
+			</form>
 		</div>
 	</div>
+	<!-- Logging and Tx Hash -->
 	<div class="row">
-		<button style="padding left:10px" ng-click='startLogging()'>Start Logging</button>
-		<button style="padding left:10px" ng-click='stopLogging()'>Stop Logging</button>
-	</div>	
+        <div class="col-md-6">
+    		<input type="" name="" ng-model='txHash'>
+    		<button ng-click='getTransactionReceipt(txHash)'> Get Tx Reciept</button> 
+    		<div ng-if="transaction.txhash">
+    			<p>
+    				<label>Transaction Hash: </label>{{transaction.txhash}}
+    			</p>
+    			<p>
+    				<label> Transaction Index: </label>{{transaction.txIndex}}
+    			</p>
+                <p>
+    				<label>BlockHash: </label>{{transaction.blockHash}}
+    			</p>
+    			<p>
+    				<label>Gas Used: </label>{{transaction.gasUsed}}
+    			</p>
+    			<p>
+    				<label>Cumulative Gas Used: </label>{{transaction.cumulativeGasUsed}}
+    			</p>						
+    		</div>
+	   </div>
+    	<div class="col-md-6">
+    		<button style="padding left:10px" ng-click='startLogging()'>Start Logging</button>
+    		<button style="padding left:10px" ng-click='stopLogging()'>Stop Logging</button>
+    	</div>
+    </div>
 </div> <!-- container ends here -->
 
 
