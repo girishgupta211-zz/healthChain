@@ -1,0 +1,43 @@
+<nav class="navbar navbar-default nav1">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<h1> ID Coin </h1>
+		</div>
+	</div>
+</nav>
+
+<div class="container">
+	<div class="row">
+	 	<div class="col-sm-12">
+	 		<table class = "table table-hover table-striped table-responsive table-bordered">
+	 			<thead>
+	 				<tr class="row">
+		 				<th class="col-sm-2"> Transaction Hash </th>
+		 				<th class="col-sm-2"> Patients Address </th>
+		 				<th class="col-sm-2"> Name </th>
+		 				<th class="col-sm-2"> Address </th>
+		 				<th class="col-sm-1"> DOB </th>
+		 				<th class="col-sm-2"> Mobile No </th>
+		 				<th class="col-sm-1"> Blood Group </th>
+		 			</tr>
+	 			</thead>
+	 			<tbody>
+	 				<tr ng-repeat="patient in patients" class="row">
+	 					<td class="col-sm-2">{{patient.transactionId}} </td>
+	 					<td class="col-sm-2">{{patient.patientId}} </td>
+	 					<td class="col-sm-2">{{patient.name}} </td>
+	 					<td class="col-sm-2">{{patient.address}} </td>
+	 					<td class="col-sm-1">{{patient.dob}} </td>
+	 					<td class="col-sm-2">{{patient.mobileNo}} </td>
+	 					<td class="col-sm-1">{{patient.bloodGroup}} </td>
+	 				</tr>
+	 			</tbody>
+	 		</table>
+	 	</div>
+	</div>
+	<ul uib-pagination total-items="transactionCount" max-size="2" items-per-page="2" ng-model="currentPage" ng-change="pageChanged()"></ul>
+</div
+
+
+
+ 

@@ -140,14 +140,15 @@
 			      </div>
 			    </div>
 			    <div class="form-group">
-			      <div class="col-sm-offset-2 col-sm-10">	        
+			      <div class="col-sm-offset-2 col-sm-4">	        
 			        <button type="button" class="btn btn-default" ng-click="addPrescription(medicine.name,medicine.timesADay, medicine.fromdate, medicine.tilldate, medicine.doctorId)" >Add </button>
+			      </div>
+			      <div class="col-sm-2">	        
+			        <button type="button" ng-click="submitPrescription(medicine.patientId)" class="btn btn-default">Submit </button>
 			      </div>
 			    </div>
 			    <div class="form-group">
-			      <div class="col-sm-offset-2 col-sm-10">	        
-			        <button type="button" ng-click="submitPrescription(medicine.patientId)" class="btn btn-default">Submit </button>
-			      </div>
+			      
 			    </div>
 			</form>
 		</div>
@@ -182,6 +183,8 @@
     </div>
 </div> <!-- container ends here -->
 
+<br/>
+<br/>
 
     
 

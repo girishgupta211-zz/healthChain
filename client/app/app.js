@@ -4,7 +4,7 @@
 angular.module('myApp', [
   'ngRoute',
   'myApp.dashboard',
-  'myApp.transactions',
+  'myApp.patients',
   'ui.bootstrap'
 ]).
 config(['$locationProvider', '$routeProvider',function($locationProvider, $routeProvider) {

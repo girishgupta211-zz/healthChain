@@ -17,8 +17,8 @@ var PatientService = function(){
 			dob : dob,
 			mobileNo : mobileNo,
 			bloodGroup : bloodGroup
-		}, function(err, transaction) {
-			console.log("Error : "+err, "Transaction : "+JSON.stringify(transaction));
+		}, function(err, patient) {
+			console.log("Error : "+err, "Patient : "+JSON.stringify(patient));
 			if(err) { return cb({error : true, message : err}) };
 			return cb({error : false, message : "Patient Added Successfully"});
 		});
@@ -33,24 +33,15 @@ var PatientService = function(){
 		})
 	}
 
-	/* Without pagination*/
-	/*_self.getAllTransactions = function(cb){
-		Transaction.find(function(err,result){
-			if(err) { return cb({"success" : false, message : err}) };
-			//return cb({error:false, message: success});
-			return cb({"success":"true","data":result});
-		});
-	}*/
 
 	/*With paginations*/
-	/*_self.getAllTransactions = function(skipRows,limit,cb){
-		debugger;
-		var cursor = Transaction.find();
+	_self.getPatients = function(skipRows,limit,cb){		
+		var cursor = Patients.find();
 		cursor.skip(skipRows).limit(limit)
 			.then(function callback(result){				
 				return cb({"success":"true","data":result});
 			});
-	}*/
+	}
 
 	/* With optional param*/
 	/*_self.getAllTransactions = function(skipRows,limit,status,cb){
@@ -60,11 +51,10 @@ var PatientService = function(){
 			.then(function callback(result){				
 				return cb({"success":"true","data":result});
 			});
-	}
+	}*/
 
-	_self.countTransactions = function(status,cb){
-		var query = status ? {status: status}: {};
-		Transaction.count(query, function(err, result){
+	_self.countRecords = function(cb){		
+		Patients.count({}, function(err, result){
 			if(err){
 				return cb({success : false, message : "Unable to get Transaction count"});
 			}
@@ -72,10 +62,12 @@ var PatientService = function(){
 				return cb({success : true, data:result});
 			}
 		});
-	}*/
+	}
 	return {
 		"savePatient" : _self.savePatient,
-		"addPrescription" : _self.addPrescription		
+		"addPrescription" : _self.addPrescription,
+		"getPatients" : _self.getPatients,
+		"countRecords" : _self.countRecords
 	}
 }
 

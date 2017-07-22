@@ -2,12 +2,16 @@
 
 var express = require('express'),
 	mongoose = require('mongoose'),
-	http = require('http'); 
+	http = require('http'),
+	config = require('./config/index');
+
+	// can be written as => config = require('./config');
 
 const PORT = 7000; //port on which this server runs
 
 var app = express();
-var dbUrl = "mongodb://localhost/ethereum";  //ethereum is name of db.
+// var dbUrl = "mongodb://localhost/ethereum";  //ethereum is name of db.
+//var dbUrl = "mongodb://localhost/healthchain";  //healthchain is name of db.
 var server = require('http').createServer(app); 
 var bodyParser = require('body-parser');  //required to parse the body of requests/responses
 app.use(bodyParser.json());
@@ -19,7 +23,8 @@ app.use(function(req, res, next) {
   next();
 });
 
-mongoose.connect(dbUrl);
+//mongoose.connect(dbUrl);
+mongoose.connect(config.mongo.url);
 
 mongoose.connection.on('error', function(err){
 	console.log("MongoDB connection Error");

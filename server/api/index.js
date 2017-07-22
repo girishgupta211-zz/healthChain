@@ -9,5 +9,7 @@ router.post('/getPatinetDetails', controller.getPatinetDetails);
 router.post('/getTransactionReceipt', controller.getTransactionReceipt);
 router.post('/logData', controller.logData);
 router.post('/addPrescription', controller.addPrescription);
+router.post('/getPatients', controller.getPatients);
+router.post('/countPatients', controller.countPatients);
 
 module.exports = router;

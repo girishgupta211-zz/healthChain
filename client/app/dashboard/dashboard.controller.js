@@ -101,112 +101,111 @@ angular.module('myApp.dashboard', ['ngRoute'])
     });
 
 
-/*From APi*/
-var config = { headers: {'Content-Type': 'application/json'}};
-$scope.register = function(name,mobileNo,dob,bloodGroup,address){
-    var from= web3.eth.accounts[0];
-   var data = JSON.stringify({
-        name: name,
-        mobileNo: mobileNo,
-        dob:dob,
-        bloodGroup: bloodGroup,
-        address: address,
-        from: from
+    /*From APi*/
+    var config = { headers: {'Content-Type': 'application/json'}};
+    $scope.register = function(name,mobileNo,dob,bloodGroup,address){
+        var from= web3.eth.accounts[0];
+       var data = JSON.stringify({
+            name: name,
+            mobileNo: mobileNo,
+            dob:dob,
+            bloodGroup: bloodGroup,
+            address: address,
+            from: from
 
-   });   
-   $http.post('http://localhost:7000/eth/registerPatient', data, config)
-        .then(function successCallback(resp){
-            console.log(resp);
-            if(resp.data.success){
-                var txHash = resp.data.data.txHash;
-                var patientAddress = resp.data.data.patientsAddress;
-                alert('patient Id = '+patientAddress);
-            }
-            else{
-                alert('Error: '+resp.data.data.message);
-            }                                      
-            }, function errorCallback(resp){
+       });   
+       $http.post('http://localhost:7000/eth/registerPatient', data, config)
+            .then(function successCallback(resp){
                 console.log(resp);
-   });     
-}
-
-$scope.getPatientDetails = function(id){
-    var data = JSON.stringify({
-        patientId: id
-   });   
-   $http.post('http://localhost:7000/eth/getPatinetDetails', data, config)
-        .then(function successCallback(resp){
-            console.log(resp);
-            if(resp.data.success){
-                $scope.patient.name1 = resp.data.data.name;
-                $scope.patient.dob1 = resp.data.data.dob;
-                $scope.patient.address1 = resp.data.data.address;
-                $scope.patient.bloodGroup1 = resp.data.data.bloodGroup;
-                $scope.patient.mobileNo1 = resp.data.data.mobileNo;
-            }
-            else{
-                alert('Error: '+resp.data.data.message);
-            }                                      
-            }, function errorCallback(resp){
-                console.log(resp);
-    });      
-}
-
-$scope.transaction={};
-$scope.medicine={};
-$scope.getTransactionReceipt = function(txhash){
-    var data = JSON.stringify({
-       txHash: txHash
-    });   
-    $http.post('http://localhost:7000/eth/getTransactionReceipt', data, config)
-        .then(function successCallback(resp){
-            console.log(resp);
-            if(resp.data.success){
-                var respData = resp.data.data;
-                $scope.transaction.txhash = respData.transactionHash;
-                $scope.transaction.txIndex = respData.transactionIndex;
-                $scope.transaction.blockHash = respData.blockHash;
-                $scope.transaction.blockNumber = respData.blockNumber;
-                $scope.transaction.gasUsed = respData.gasUsed;
-                $scope.transaction.cumulativeGasUsed = respData.cumulativeGasUsed;
-                $scope.transaction.data = respData.logs.data; 
-            }
-            else{
-                alert('Error: '+resp.data.data.message);
-            }                                      
-            }, function errorCallback(resp){
-                console.log(resp);
-    });
+                if(resp.data.success){
+                    var txHash = resp.data.data.txHash;
+                    var patientAddress = resp.data.data.patientsAddress;
+                    alert('patient Id = '+patientAddress);
+                }
+                else{
+                    alert('Error: '+resp.data.data.message);
+                }                                      
+                }, function errorCallback(resp){
+                    console.log(resp);
+       });     
     }
 
-$scope.prescription = [];
-$scope.addPrescription = function(name,timesADay,fromDate,tillDate,doctorId){
-    var currentPrecription = {name:name, timesADay: timesADay, fromdate: fromDate, tillDate: tillDate, doctorId: doctorId};
-    //$scope.prescription.push(currentPrecription);
-    $scope.prescription.push(currentPrecription);
-    console.log(typeof($scope.prescription));
-}
-
-$scope.submitPrescription = function(patientId){
-    console.log($scope.prescription);
-    var data = {
-        'patientId': patientId,
-        'prescription': $scope.prescription
-    }
-    console.log(data);
-    //$scope.precription = [];
-    $http.post('http://localhost:7000/eth/addPrescription', data, config)
-        .then(function successCallback(resp){
-            console.log(resp);
-            if(resp.data.success){
-                console.log("Prescription added successfully");
-            }
-            else{
-                alert('Error: '+resp.data.data.message);
-            }                                      
-            }, function errorCallback(resp){
+    $scope.getPatientDetails = function(id){
+        var data = JSON.stringify({
+            patientId: id
+       });   
+       $http.post('http://localhost:7000/eth/getPatinetDetails', data, config)
+            .then(function successCallback(resp){
                 console.log(resp);
-   });
-}
+                if(resp.data.success){
+                    $scope.patient.name1 = resp.data.data.name;
+                    $scope.patient.dob1 = resp.data.data.dob;
+                    $scope.patient.address1 = resp.data.data.address;
+                    $scope.patient.bloodGroup1 = resp.data.data.bloodGroup;
+                    $scope.patient.mobileNo1 = resp.data.data.mobileNo;
+                }
+                else{
+                    alert('Error: '+resp.data.data.message);
+                }                                      
+                }, function errorCallback(resp){
+                    console.log(resp);
+        });      
+    }
 
+    $scope.transaction={};
+    $scope.medicine={};
+    $scope.getTransactionReceipt = function(txhash){
+        var data = JSON.stringify({
+           txHash: txHash
+        });   
+        $http.post('http://localhost:7000/eth/getTransactionReceipt', data, config)
+            .then(function successCallback(resp){
+                console.log(resp);
+                if(resp.data.success){
+                    var respData = resp.data.data;
+                    $scope.transaction.txhash = respData.transactionHash;
+                    $scope.transaction.txIndex = respData.transactionIndex;
+                    $scope.transaction.blockHash = respData.blockHash;
+                    $scope.transaction.blockNumber = respData.blockNumber;
+                    $scope.transaction.gasUsed = respData.gasUsed;
+                    $scope.transaction.cumulativeGasUsed = respData.cumulativeGasUsed;
+                    $scope.transaction.data = respData.logs.data; 
+                }
+                else{
+                    alert('Error: '+resp.data.data.message);
+                }                                      
+                }, function errorCallback(resp){
+                    console.log(resp);
+        });
+        }
+
+    $scope.prescription = [];
+    $scope.addPrescription = function(name,timesADay,fromDate,tillDate,doctorId){
+        var currentPrecription = {name:name, timesADay: timesADay, fromdate: fromDate, tillDate: tillDate, doctorId: doctorId};
+        //$scope.prescription.push(currentPrecription);
+        $scope.prescription.push(currentPrecription);
+        console.log(typeof($scope.prescription));
+    }
+
+    $scope.submitPrescription = function(patientId){
+        console.log($scope.prescription);
+        var data = {
+            'patientId': patientId,
+            'prescription': $scope.prescription
+        }
+        console.log(data);
+        //$scope.precription = [];
+        $http.post('http://localhost:7000/eth/addPrescription', data, config)
+            .then(function successCallback(resp){
+                console.log(resp);
+                if(resp.data.success){
+                    console.log("Prescription added successfully");
+                }
+                else{
+                    alert('Error: '+resp.data.data.message);
+                }                                      
+                }, function errorCallback(resp){
+                    console.log(resp);
+       });
+    }
 }); // controller ends here

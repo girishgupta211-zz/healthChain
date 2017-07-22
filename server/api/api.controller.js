@@ -16,7 +16,7 @@ var web3 = web3_extended.create(options);
 /*Admin Contract*/
 var adminAbiString = '[{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"patients","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"uint256"}],"name":"records","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"patientsAddr","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"id","type":"address"},{"name":"day","type":"uint256"},{"name":"data","type":"string"}],"name":"addRecords","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getFirstPatietAddress","outputs":[{"name":"addr","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"name","type":"string"},{"name":"p_address","type":"string"},{"name":"dob","type":"uint256"},{"name":"blood_grp","type":"string"},{"name":"phnum","type":"string"}],"name":"registerPatient","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"Admin","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"inputs":[],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"id","type":"address"},{"indexed":false,"name":"desc","type":"string"}],"name":"log","type":"event"}]';
 var adminAbi = JSON.parse(adminAbiString);
-var adminContract = web3.eth.contract(adminAbi).at("0x4b058e018fbbc314162069b9ffc8272014456420");
+var adminContract = web3.eth.contract(adminAbi).at("0x3118ef8756082aa9d94bafe4062fbea97dc7b6c9");
 var patientabi = JSON.parse('[{"constant":true,"inputs":[],"name":"getName","outputs":[{"name":"name","type":"string"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getaddress","outputs":[{"name":"add","type":"string"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"bpm","type":"uint256"},{"name":"bp","type":"uint256"},{"name":"spo2","type":"string"}],"name":"addHealthData","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getbloodgrp","outputs":[{"name":"blood_grp","type":"string"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"p","outputs":[{"name":"name","type":"string"},{"name":"p_address","type":"string"},{"name":"dob","type":"uint256"},{"name":"blood_grp","type":"string"},{"name":"phnum","type":"string"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getdob","outputs":[{"name":"dob","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getphnum","outputs":[{"name":"phnum","type":"string"}],"payable":false,"type":"function"},{"inputs":[{"name":"name","type":"string"},{"name":"p_address","type":"string"},{"name":"dob","type":"uint256"},{"name":"blood_grp","type":"string"},{"name":"phnum","type":"string"}],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"bpm","type":"uint256"},{"indexed":false,"name":"bp","type":"uint256"},{"indexed":false,"name":"spo2","type":"string"}],"name":"logEvent","type":"event"}]');        
 
 
@@ -64,7 +64,6 @@ exports.logData = function(req, resp){
     }
 }
 
-
 exports.addPrescription = function(req, resp){
 	debugger;
 	var patientId = req.body.patientId;
@@ -78,7 +77,44 @@ exports.addPrescription = function(req, resp){
 			console.log("Prescription could not be saved");		
 		}
 	})
+}
 
+exports.getPatients = function(req, res){
+    console.log("getting patients");
+    var skipRows = req.body.skipRows;
+    var limit = req.body.limit;
+    PatientService.getPatients(skipRows,limit,function(resp){
+        if(!resp.success){
+            console.log("Error occured in getting patients");
+        }
+        else{
+            console.log("succesfully recieved patients");
+            debugger;
+            return res.json({"success":"true","data":[{"result":resp}]});
+        }
+    })
+    /*debugger;
+    Transaction.find(function(err,result){
+        if(err) console.log("Error in getting transaction: "+err);
+        else{
+            console.log(JSON.stringify(result));
+            return res.json({"success":"true","data":[{"result":result}]});
+        }
+    })*/
+}
+
+exports.countPatients = function (req, res){
+    //var status = req.body.status;
+    PatientService.countRecords(function(resp){
+        if(!resp.success){
+            console.log("Error occured in getting count");
+            return res.json({"success":"false","data":[{"message":"Error occured in getting count"}]});
+        }
+        else{
+            console.log("Total Patients = "+resp.data);
+            return res.json({"success":"true","data":[{"result":resp}]});
+        }
+    })
 }
 
 // saving transaction details to database.
