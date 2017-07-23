@@ -32,8 +32,6 @@ var PatientService = function(){
 				cb({error : false, message : "Prescription added for user"});
 		})
 	}
-
-
 	/*With paginations*/
 	_self.getPatients = function(skipRows,limit,cb){		
 		var cursor = Patients.find();
@@ -51,7 +49,29 @@ var PatientService = function(){
 			.then(function callback(result){				
 				return cb({"success":"true","data":result});
 			});
-	}*/
+	}*/////create a calander for each prescriptionIdcreate a calander for each prescriptionId
+
+	_self.addSchedule = function(precsriptIonId,fromDate,tillDate, status, timesADay){
+		var dateDiff = tillDate.getTime() - fromDate.getDate().getTime();
+		var noOfRecords = dateDiff/(1000*60*60*24);
+		var date = fromDate();
+		for(int i=0; i<noOfRecords; i++){
+			//create record with pending status and increasing date
+			for(int j=0; j<timesADay; j++ ){
+				Schedules.create({
+				prescriptionId : txId,
+				date : patientId,
+				time : j,
+				status: 'pending'
+			}, function(err, patient) {
+				console.log("Error : "+err, "Schedule : "+JSON.stringify(patient));
+				if(err) { return cb({error : true, message : err}) };
+				return cb({error : false, message : "Schedule Added Successfully"});
+			});
+			}
+			date = date.getDate()+i;
+		}
+	}
 
 	_self.countRecords = function(cb){		
 		Patients.count({}, function(err, result){
@@ -67,7 +87,8 @@ var PatientService = function(){
 		"savePatient" : _self.savePatient,
 		"addPrescription" : _self.addPrescription,
 		"getPatients" : _self.getPatients,
-		"countRecords" : _self.countRecords
+		"countRecords" : _self.countRecords,
+		"addSchedule": _self.addSchedule
 	}
 }
 

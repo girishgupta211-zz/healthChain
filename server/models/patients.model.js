@@ -14,7 +14,7 @@ var Patients = new Schema({
 	bloodGroup : { type : String ,required : true},
 	prescription: [{
 		medicineName: String,
-		timesAday : Number,
+		timesADay : Number,
 		fromDate: Date,
 		tillDate: Date,
 		doctorId: String

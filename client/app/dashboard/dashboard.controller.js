@@ -181,7 +181,7 @@ angular.module('myApp.dashboard', ['ngRoute'])
 
     $scope.prescription = [];
     $scope.addPrescription = function(name,timesADay,fromDate,tillDate,doctorId){
-        var currentPrecription = {name:name, timesADay: timesADay, fromdate: fromDate, tillDate: tillDate, doctorId: doctorId};
+        var currentPrecription = {medicineName:name, timesADay: timesADay, fromDate: fromDate, tillDate: tillDate, doctorId: doctorId};
         //$scope.prescription.push(currentPrecription);
         $scope.prescription.push(currentPrecription);
         console.log(typeof($scope.prescription));
