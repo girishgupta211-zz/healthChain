@@ -1,7 +1,8 @@
 'use strict'
 
 var Patients = require('./../models/patients.model'),
-	mongoose = require('mongoose');
+	mongoose = require('mongoose'),
+	Schedules = require('./../models/schedules.model');
 
 
 var PatientService = function(){
@@ -51,16 +52,17 @@ var PatientService = function(){
 			});
 	}*/////create a calander for each prescriptionIdcreate a calander for each prescriptionId
 
-	_self.addSchedule = function(precsriptIonId,fromDate,tillDate, status, timesADay){
-		var dateDiff = tillDate.getTime() - fromDate.getDate().getTime();
+	_self.addSchedule = function(patientId,medicineName,fromDate,tillDate,timesADay,cb){
+		var dateDiff = new Date(tillDate).getTime() - new Date(fromDate).getTime();
 		var noOfRecords = dateDiff/(1000*60*60*24);
-		var date = fromDate();
-		for(int i=0; i<noOfRecords; i++){
+		var date = new Date(fromDate);
+		for(var i=0; i<=noOfRecords; i++){
 			//create record with pending status and increasing date
-			for(int j=0; j<timesADay; j++ ){
+			for(var j=0; j<timesADay; j++ ){
 				Schedules.create({
-				prescriptionId : txId,
-				date : patientId,
+				patientId : patientId,
+				medicineName: medicineName,
+				date : date,
 				time : j,
 				status: 'pending'
 			}, function(err, patient) {
@@ -69,7 +71,9 @@ var PatientService = function(){
 				return cb({error : false, message : "Schedule Added Successfully"});
 			});
 			}
-			date = date.getDate()+i;
+			//date = new Date(date).getDate()+i;
+			var date1 = date.getTime()+(24*60*60*1000);
+			date = new Date(date1);
 		}
 	}
 

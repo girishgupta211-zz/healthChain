@@ -71,7 +71,13 @@ exports.addPrescription = function(req, resp){
 	PatientService.addPrescription(patientId, prescription, function(resp1){
 		if(!resp1.error){
 			console.log("Resp from db : "+JSON.stringify(resp1));
-            //create a calander for each prescriptionId
+            //create a calander for each prescription
+            for(var i=0; i<prescription.length ; i++){
+                console.log(prescription[i].medicineName);
+                var cp = prescription[i];
+                addSchedule(patientId,cp.medicineName,cp.fromDate,cp.tillDate,cp.timesADay);
+            }
+
     		return resp.json({"success":"true","data":"Prescription added successfully"});
     	}
 		else{
@@ -81,9 +87,18 @@ exports.addPrescription = function(req, resp){
 }
 
 
-function createCalancer(){
+function addSchedule(patientId,medicineName,fromDate,tillDate,timesADay){
     // create calander will take params like id, tillDate, fromdate, medicineName, status
-    
+    PatientService.addSchedule(patientId,medicineName,fromDate,tillDate, timesADay,function(resp1){
+        if(!resp1.error){
+            console.log("Resp from db : "+JSON.stringify(resp1));
+            //create a calander for each prescriptionId
+            //return resp.json({"success":"true","data":"Schedule added successfully"});
+        }
+        else{
+            console.log("Schedule could not be saved");     
+        }
+    });
 }
 
 exports.getPatients = function(req, res){
