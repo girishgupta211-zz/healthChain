@@ -2,7 +2,8 @@
 
 var Patients = require('./../models/patients.model'),
 	mongoose = require('mongoose'),
-	Schedules = require('./../models/schedules.model');
+	Schedules = require('./../models/schedules.model'),
+	PrescriptionLogs = require('./../models/prescriptionLogs.model');
 
 
 var PatientService = function(){
@@ -42,6 +43,31 @@ var PatientService = function(){
 			});
 	}
 
+	/*_self.getSchedule = function(patientId,cb){
+		var query = {patientId: patientId};
+		//sort({_id:-1}).limit(1)
+		//Schedules.findOne(query, function(err, result){
+		Schedules.findOne(query, function(err, result){
+			if(err){
+				return cb({success : false, message : "Unable to get schedules"});
+			}
+			else{
+				return cb({success : true, data:result._doc});
+			}
+		});
+	}*/
+
+	_self.getSchedule = function(patientId,fromDatecb){
+		var query = {patientId: patientId};
+		//db.market.find({}).sort({_id:-1}).limit(1)
+		Schedules.find(query, function(err, res){
+			if(err)
+				return cb({success : false, message : "Unable to get schedules"});
+			else
+				return cb({success : true, data:res});
+		});
+	}
+
 	/* With optional param*/
 	/*_self.getAllTransactions = function(skipRows,limit,status,cb){
 		var query = status ? {status:status} :{};
@@ -77,6 +103,28 @@ var PatientService = function(){
 		}
 	}
 
+	_self.addPrescriptionLog = function(patientId, prescription,cb){
+		PrescriptionLogs.create({
+			patientId:patientId,
+			prescription:prescription}, 
+			function(err, res) {
+			console.log("Error : "+err, "PrescriptionLogs : "+JSON.stringify(res));
+				if(err) { return cb({error : true, message : err}) };
+				return cb({error : false, message : "PrescriptionLog Added Successfully"});
+		});
+	}
+
+	_self.getPrescriptionLog = function(patientId, cb){
+		var query = patientId ? {'patientId':patientId} : '';
+		PrescriptionLogs.find(query, function(err, res){
+			if(err)
+				return cb({success : false, message : "Unable to get PrescriptionLogs"});
+			else
+				return cb({success : true, data:res});
+
+		});
+	}
+
 	_self.countRecords = function(cb){		
 		Patients.count({}, function(err, result){
 			if(err){
@@ -92,7 +140,10 @@ var PatientService = function(){
 		"addPrescription" : _self.addPrescription,
 		"getPatients" : _self.getPatients,
 		"countRecords" : _self.countRecords,
-		"addSchedule": _self.addSchedule
+		"addSchedule": _self.addSchedule,
+		"getSchedule": _self.getSchedule,
+		"addPrescriptionLog": _self.addPrescriptionLog,
+		"getPrescriptionLog": _self.getPrescriptionLog
 	}
 }
 

@@ -64,8 +64,7 @@ exports.logData = function(req, resp){
     }
 }
 
-exports.addPrescription = function(req, resp){
-	debugger;
+exports.addPrescription = function(req, resp){	
 	var patientId = req.body.patientId;
 	var prescription = req.body.prescription;
 	PatientService.addPrescription(patientId, prescription, function(resp1){
@@ -73,19 +72,19 @@ exports.addPrescription = function(req, resp){
 			console.log("Resp from db : "+JSON.stringify(resp1));
             //create a calander for each prescription
             for(var i=0; i<prescription.length ; i++){
-                console.log(prescription[i].medicineName);
                 var cp = prescription[i];
                 addSchedule(patientId,cp.medicineName,cp.fromDate,cp.tillDate,cp.timesADay);
             }
+            // save logs
+            addPrescriptionLogs(patientId, prescription);
 
     		return resp.json({"success":"true","data":"Prescription added successfully"});
     	}
 		else{
-			console.log("Prescription could not be saved");		
+			console.log("Prescription could  not be saved");		
 		}
 	})
 }
-
 
 function addSchedule(patientId,medicineName,fromDate,tillDate,timesADay){
     // create calander will take params like id, tillDate, fromdate, medicineName, status
@@ -101,6 +100,46 @@ function addSchedule(patientId,medicineName,fromDate,tillDate,timesADay){
     });
 }
 
+exports.getSchedule = function(req, resp){
+    var patientId = req.body.patientId;
+    //var patientId = '0x1309d6120d98aaf56913c7ab7b5964a95ecb8697';
+    PatientService.getSchedule(patientId, function(resp1){
+        if(!resp1.success){
+            console.log("Error in getting schedule");
+            return res.json({"success":"false","message":"Error in getting schedule"});
+        }
+        else{
+            console.log("succesfully recieved schedule");
+            return resp.json({"success":"true","data":[{"result":resp1}]});
+        }
+    });
+}
+
+function addPrescriptionLogs(patientId, prescription){
+    PatientService.addPrescriptionLog(patientId, prescription, function(resp1){
+        if(!resp1.error)
+            return true;
+        else
+            return false;
+    });
+}
+
+exports.getPrescriptionLogs = function(req, res){
+    var patientId = req.body.patientId;
+    PatientService.getPrescriptionLog(patientId, function(resp1){
+        if(!resp1.success){
+            console.log("Error occured in getting prescription history");
+            return res.json({"success":"false","message":"Error occured in getting prescription history"});
+        }
+        else{
+            console.log("succesfully recieved prescription history");
+            return res.json({"success":"true","data":[{"result":resp1}]});
+        }
+    })
+}
+
+
+
 exports.getPatients = function(req, res){
     console.log("getting patients");
     var skipRows = req.body.skipRows;
@@ -108,10 +147,10 @@ exports.getPatients = function(req, res){
     PatientService.getPatients(skipRows,limit,function(resp){
         if(!resp.success){
             console.log("Error occured in getting patients");
+            return res.json({"success":"false","message":"Error occured in getting patients"});
         }
         else{
             console.log("succesfully recieved patients");
-            debugger;
             return res.json({"success":"true","data":[{"result":resp}]});
         }
     })

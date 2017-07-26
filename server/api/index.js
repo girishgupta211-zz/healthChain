@@ -11,5 +11,7 @@ router.post('/logData', controller.logData);
 router.post('/addPrescription', controller.addPrescription);
 router.post('/getPatients', controller.getPatients);
 router.post('/countPatients', controller.countPatients);
+router.post('/getSchedule', controller.getSchedule);
+router.post('/getPrescriptionLogs', controller.getPrescriptionLogs);
 
 module.exports = router;
