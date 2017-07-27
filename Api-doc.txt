@@ -1,0 +1,153 @@
+Api DEtails:
+	1. Register Patient:
+		Header: {'Content-Type': 'application/json'}
+		Url: http://localhost:7000/eth/registerPatient
+		Type: POST
+		Data: { name: name, (type: string) // Name of patient
+        		mobileNo: mobileNo,(type: number) // Mobile no of Patient
+		        dob:dob, (type: number)// DOb of Patient
+		        bloodGroup: bloodGroup,(type: string) // BloodGroup of patient
+		        address: address, (type: string) // Address of Patient
+		        from: from (type: string) // Adress from which transaction is to be sent
+		        }
+		Response: {"success":"true",
+					"data":{
+						'txHash': txHash,
+						'patientsAddress':patientAddress
+					}
+				}
+
+
+	2. Get Patient Details
+		Header: {'Content-Type': 'application/json'}
+		Url: http://localhost:7000/eth/getPatinetDetails
+		Type: POST
+		Data: { 
+		        id : patientsId (type: string)// Patients's id
+		        }
+		Response: {"success":"true",
+				  data":{
+				  	'txHash': txHash,
+				  	'txIndex':txIndex, 
+				  	'blockHash': blockHash,
+				  	'blockNumber':blockNumber,
+				  	'gasUsed':gasUsed,
+				  	'cumulativeGasUsed':cumulativeGasUsed
+				  	}
+				  }
+
+
+	3.Add Prescription:
+		Header: {'Content-Type': 'application/json'}
+		Url: http://localhost:7000/eth/addPrescription
+		Type: POST
+		Ddata = {
+		        'patientId': patientId,
+		        'prescription': {
+		        	name:name, (type: string) // name of Medicine
+		        	timesADay: timesADay, (type: Number)// how many times a day patient should take medicines
+		        	fromdate: fromDate,(type:Date) // from which date patient should start takeing medicine
+		        	tillDate: tillDate, (type:Date) // till what date patient should take medicine
+		        	doctorId: doctorId (type: string)// id of doctor who prescribed medicine
+		        }
+		    }
+		Response: {"success":"true","data":"Prescription added successfully"}
+
+
+	4. Get Transaction Reciept:
+		Url: http://localhost:7000/eth/getTransactionReceipt
+		Type: POST
+		Data = {
+		        txHash: txHash (type: string)// Transaction Hash whose Receipt is needed.
+		    }
+		Response: 
+				{"success":"true",
+				  "data":{
+				  	'txHash': txHash,
+				  	'txIndex':txIndex,
+				    'blockHash': blockHash,
+				    'blockNumber':blockNumber,
+				    'gasUsed':gasUsed,'
+				    'cumulativeGasUsed':cumulativeGasUsed
+				}
+
+
+	5. Get Schedule
+		Header: {'Content-Type': 'application/json'}
+		Url: http://localhost:7000/eth/getSchedule
+		Type: POST
+		data = {'patientId': patientId }
+		Response:
+			{
+			  "success": "true",
+			  "data": [
+			    {
+			      "result": {
+			        "success": true,
+			        "data": [
+			          {
+			            "_id": "5978dc17a2b7123ae69f6b3d",
+			            "patientId": "0x1309d6120d98aaf56913c7ab7b5964a95ecb8697",
+			            "medicineName": "name2",
+			            "date": "2017-06-26T18:30:00.000Z",
+			            "time": 1,
+			            "status": "pending",
+			            "__v": 0
+			          },          
+			          {
+			            "_id": "5978e8ab7fd7ce412fbb1931",
+			            "patientId": "0x1309d6120d98aaf56913c7ab7b5964a95ecb8697",
+			            "medicineName": "name2",
+			            "date": "2017-06-26T18:30:00.000Z",
+			            "time": 2,
+			            "status": "pending",
+			            "__v": 0
+			          }
+			        ]
+			      }
+			    }
+			  ]
+			}
+
+
+	6. Get PrescriptionLogs
+		Header: {'Content-Type': 'application/json'}
+		Url: http://localhost:7000/eth/getPrescriptionLogs
+		Type: POST
+		data = {'patientId': patientId } (optional)
+		Response:
+			{
+			  "success": "true",
+			  "data": [
+			    {
+			      "result": {
+			        "success": true,
+			        "data": [
+			          {
+			            "_id": "5978e8ab7fd7ce412fbb1932",
+			            "patientId": "0x1309d6120d98aaf56913c7ab7b5964a95ecb8697",
+			            "__v": 0,
+			            "prescription": [
+			              {
+			                "medicineName": "name1",
+			                "timesADay": 3,
+			                "fromDate": "2017-06-22T18:30:00.000Z",
+			                "tillDate": "2017-06-25T18:30:00.000Z",
+			                "doctorId": "doc1",
+			                "_id": "5978e8ab7fd7ce412fbb1934"
+			              },
+			              {
+			                "medicineName": "name2",
+			                "timesADay": 3,
+			                "fromDate": "2017-06-23T18:30:00.000Z",
+			                "tillDate": "2017-06-26T18:30:00.000Z",
+			                "doctorId": "doc2",
+			                "_id": "5978e8ab7fd7ce412fbb1933"
+			              }
+			            ]
+			          }
+			        ]
+			      }
+			    }
+			  ]
+			}
