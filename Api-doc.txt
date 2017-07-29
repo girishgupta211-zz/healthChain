@@ -151,3 +151,15 @@ Api DEtails:
 			    }
 			  ]
 			}
+
+
+	7. updateMedicineTakeStatus
+		Header: {'Content-Type': 'application/json'}
+		Url: http://localhost:7000/eth/updateMedicineTakeStatus
+		Type: POST
+		data = {'patientId':'0x1309d6120d98aaf56913c7ab7b5964a95ecb8697', 'medicineName':'name2', 'date':'06/27/2017', 'time':'2', 'status':'taken'}
+		Response:
+			{
+				"success": "true",
+				"message": "status upadated sucessfully"
+			}

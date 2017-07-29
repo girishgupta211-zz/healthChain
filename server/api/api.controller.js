@@ -11,7 +11,7 @@ var options = {
   admin: false,
   debug: false
 };
-var adminAddress = "0xdecaaf96d20af1819faedb11c7912d2671189855";
+var adminAddress = "0x93053d64a81a55715287d34cdc2fd04bb4e8bc59";
 var patientContractAddress = '0x44b348d94e99e50bea5b0a478099dffa7edc876e';
 var web3 = web3_extended.create(options);
 /*Admin Contract*/
@@ -33,6 +33,17 @@ exports.registerPatient = function(req, res){
     // Save patients to db
     savePatient(txHash,patientAddress,name,address,dob,bloodGroup,mobileNo);
     return res.json({"success":"true",'txHash': txHash, 'patientsAddress':patientAddress});
+}
+
+exports.addCareTacker = function(req, res){
+    var patientId = req.body.patientId;
+    var name = req.body.name;
+    var email= req.body.email;
+    PatientService.addCareTacker = function(err, resp1){
+        if(!err){
+            return res.json({"success":"true","message":"Added successfully"});
+        }
+    }
 }
 
 exports.getPatinetDetails = function(req, res){
@@ -156,6 +167,22 @@ exports.getPrescriptionLogs = function(req, res){
     })
 }
 
+exports.updateMedicineTakeStatus = function(req, resp){
+    var patientId = req.body.patientId;
+    var medicineName = req.body.medicineName;
+    var date = req.body.date;
+    var time = req.body.time; // 0-morning, 1- afternood, 2- evening/night
+    var status = req.body.status; // Taken or skipped
+    PatientService.updateMedicineTakeStatus(patientId, medicineName,date, time, status, function(resp1){
+        if(!resp1.error)
+            //return true;
+            return resp.json({"success":"true", 'message':'status upadated sucessfully'});
+        else
+            return resp.json({"success":"false", 'message':'unable to update status'});
+    });
+
+}
+
 
 
 exports.getPatients = function(req, res){
@@ -208,3 +235,20 @@ function savePatient(txId,patientId,name,address,dob,bloodGroup,mobileNo){
 		}
 	});
 } // save Patient ends here
+
+
+// save medicieStatus
+exports.addMedicineLogs = function(req, resp){
+    var patientId = req.body.patientId;
+    var medicineName = req.body.medicineName;
+    var date = req.body.date;
+    var time = req.body.time; //time submiited by end user
+    var status = req.body.status; // Taken or skipped
+    PatientService.addMedicineLogs(patientId, medicineName,date, time, status, function(resp1){
+        if(!resp1.error)
+            //return true;
+            return resp.json({"success":"true", 'message':'status upadated sucessfully'});
+        else
+            return resp.json({"success":"false", 'message':'unable to update status'});
+    }); 
+}

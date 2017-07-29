@@ -13,5 +13,7 @@ router.post('/getPatients', controller.getPatients);
 router.post('/countPatients', controller.countPatients);
 router.post('/getSchedule', controller.getSchedule);
 router.post('/getPrescriptionLogs', controller.getPrescriptionLogs);
+router.post('/updateMedicineTakeStatus', controller.updateMedicineTakeStatus);
+router.post('/addMedicineLogs', controller.addMedicineLogs);
 
 module.exports = router;

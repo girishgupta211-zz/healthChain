@@ -3,7 +3,8 @@
 var Patients = require('./../models/patients.model'),
 	mongoose = require('mongoose'),
 	Schedules = require('./../models/schedules.model'),
-	PrescriptionLogs = require('./../models/prescriptionLogs.model');
+	PrescriptionLogs = require('./../models/prescriptionLogs.model'),
+	MedicineLogs = require("./../models/medicineLogs.model")
 
 
 var PatientService = function(){
@@ -103,6 +104,18 @@ var PatientService = function(){
 		}
 	}
 
+	_self.updateMedicineTakeStatus = function(patientId, medicineName,date, time, status,cb){
+		var query = {'patientId':patientId, 'date':date, 'medicineName':medicineName, 'time':time};
+		//Patients.update({patientId:patientId}, {prescription:prescription}, function(err, resp){
+		
+		Schedules.update(query,{'status':status},function(err,resp){
+			if(err)
+				return cb({error : true, message : err}) 
+			else
+				cb({error : false, message : "Status updated Successfully"});
+		});
+	}
+
 	_self.addPrescriptionLog = function(patientId, prescription,cb){
 		PrescriptionLogs.create({
 			patientId:patientId,
@@ -135,6 +148,22 @@ var PatientService = function(){
 			}
 		});
 	}
+
+	_self.addMedicineLogs = function(patientId, medicineName, date,time, status,cb){
+		MedicineLogs.create({
+			patientId : patientId,
+			medicineName: medicineName,
+			date:date,
+			time:time,
+			status:status
+		}, function(err, res) {
+			console.log("Error : "+err, "Response form db : "+JSON.stringify(res));
+			if(err) { return cb({error : true, message : err}) };
+			return cb({error : false, message : "Medicine Log Added Successfully"});
+		});
+	}
+
+
 	return {
 		"savePatient" : _self.savePatient,
 		"addPrescription" : _self.addPrescription,
@@ -143,7 +172,9 @@ var PatientService = function(){
 		"addSchedule": _self.addSchedule,
 		"getSchedule": _self.getSchedule,
 		"addPrescriptionLog": _self.addPrescriptionLog,
-		"getPrescriptionLog": _self.getPrescriptionLog
+		"getPrescriptionLog": _self.getPrescriptionLog,
+		"updateMedicineTakeStatus": _self.updateMedicineTakeStatus,
+		"addMedicineLogs": _self.addMedicineLogs
 	}
 }
 

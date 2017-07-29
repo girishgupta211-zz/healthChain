@@ -11,6 +11,18 @@ pragma solidity ^0.4.11;
             string blood_grp;
             string phnum;
         }
+        
+        struct medicineStatus{
+            string medicineName;
+            uint time;
+            bool status;
+        }
+        
+        medicineStatus[] public medStatus; 
+        
+        
+        
+        
 
         patient public p;
         function Patient(string name, string p_address, uint dob, string blood_grp, string phnum)
@@ -52,6 +64,18 @@ pragma solidity ^0.4.11;
          logEvent(bpm, bp, spo2);
         }
         event logEvent(uint bpm, uint bp, string spo2);
+        
+        function storeMedicineStatus(string medicineName, uint time,  bool status){
+            medicineStatus memory  m;
+            m.medicineName = medicineName;
+            m.time = time;
+            m.status = status;
+            medStatus.push(m);
+        }
+        
+        /*function getMedicineStatusLogs() constant returns(medStatus){
+            return medStatus;
+        }*/
     }
 
     contract admin
@@ -105,5 +129,4 @@ pragma solidity ^0.4.11;
         event log(address id, string desc);
     }
 
-  // How to generate ABI https://ethereum.github.io/browser-solidity/
-  // [{"constant":true,"inputs":[],"name":"getName","outputs":[{"name":"name","type":"bytes32"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getaddress","outputs":[{"name":"add","type":"bytes32"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getbloodgrp","outputs":[{"name":"blood_grp","type":"bytes32"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"p","outputs":[{"name":"name","type":"bytes32"},{"name":"p_address","type":"bytes32"},{"name":"dob","type":"uint256"},{"name":"blood_grp","type":"bytes32"},{"name":"phnum","type":"bytes32"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"bpm","type":"uint256"},{"name":"bp","type":"uint256"},{"name":"spo2","type":"bytes32"}],"name":"addHealthData","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getdob","outputs":[{"name":"dob","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getphnum","outputs":[{"name":"phnum","type":"bytes32"}],"payable":false,"type":"function"},{"inputs":[{"name":"name","type":"bytes32"},{"name":"p_address","type":"bytes32"},{"name":"dob","type":"uint256"},{"name":"blood_grp","type":"bytes32"},{"name":"phnum","type":"bytes32"}],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"bpm","type":"uint256"},{"indexed":false,"name":"bp","type":"uint256"},{"indexed":false,"name":"spo2","type":"bytes32"}],"name":"logEvent","type":"event"}]
+ 
